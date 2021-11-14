@@ -17,22 +17,22 @@ Masaüstü ve kurulum komutları
 
 Xfce :  `apt-get install xfce4 xfce4-goodies`
 
-Lxde :  apt-get install lxde
+Lxde :  `apt-get install lxde`
 
-Cinnamon :  apt-get install cinnamon
+Cinnamon :  `apt-get install cinnamon`
 
-KDE plasma :  apt-get install kde-standard
+KDE plasma :  `apt-get install kde-standard`
 
-Gnome :  apt-get install gnome-core
+Gnome :  `apt-get install gnome-core`
 
-Mate :  apt-get install mate-desktop-environment-core
+Mate :  `apt-get install mate-desktop-environment-core`
 
-Budgie : apt-get install budgie-desktop
+Budgie : `apt-get install budgie-desktop`
 
 
 Not: XFCE4, LXDE, MATE gibi bazı masaüstülerindeki ağ bağlantısı aracı için `network-manager-gnome` paketini kurmalısınız.
 
-Örnek: apt-get install network-manager-gnome 
+Örnek: `apt-get install network-manager-gnome` 
 
 İsteğe bağlı olarak:
-apt-get install blueman gvfs-backends pavucontrol synaptic vs kurabilirsiniz..
+`apt-get install blueman gvfs-backends pavucontrol synaptic vs kurabilirsiniz..`
