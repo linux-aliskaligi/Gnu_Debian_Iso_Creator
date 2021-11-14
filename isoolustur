@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#  Bu script GNU Lesser General Public License v3.0 ile lisanslanmıştır.
+
+gri=$'\e[1;30m';
+kirmizi=$'\e[1;31m';
+yesil=$'\e[1;32m';
+sari=$'\e[1;33m';
+mavi=$'\e[1;34m';
+mor=$'\e[1;35m';
+turkuaz=$'\e[1;36m';
+sifirla=$'\e[0m';
+kalin=$'\e[1m';
+
+if [[ "$(whoami)" != root ]]; then
+	echo "${kirmizi}İlk Önce Root Olmanız Gerekmekte.."
+	exit 0
+fi
+
+clear
+echo "${kirmizi}</> ${kirmizi}Islem baslatiliyor gazabimiz mubarek olsun :D ${kirmizi}</> ${turkuaz}"
+echo "${yesil}</> ${kirmizi}Bağlanmış dosyalar ayrılıyor.. ${yesil}</> ${turkuaz}"
+umount -lf -R testing-chroot/* 2>/dev/null
+echo "${yesil}</> ${kirmizi}Temizleme işlemi.. ${yesil}</> ${turkuaz}"
+chroot testing-chroot apt autoremove
+chroot testing-chroot apt clean
+rm -f testing-chroot/root/.bash_history
+rm -rf testing-chroot/var/lib/apt/lists/*
+find testing-chroot/var/log/ -type f | xargs rm -f
+echo "${yesil}</> ${kirmizi}Paketleme aşaması.. ${yesil}</> ${turkuaz}"
+mkdir isowork
+mksquashfs testing-chroot filesystem.squashfs -comp gzip -wildcards
+mkdir -p isowork/live
+mv filesystem.squashfs isowork/live/filesystem.squashfs
+echo "${yesil}</> ${kirmizi}vmlinuz ve initrd dosyalarını isowork/live içerisine atalım. ${yesil}</> ${turkuaz}"
+cp -pf testing-chroot/boot/initrd.img* isowork/live/initrd.img
+cp -pf testing-chroot/boot/vmlinuz* isowork/live/vmlinuz
+echo "${yesil}</> ${kirmizi}grub.cfg dosyası oluşturalım. ${yesil}</> ${turkuaz}"
+mkdir -p isowork/boot/grub/
+echo 'menuentry "Start Debian 64-bit" --class debian {' > isowork/boot/grub/grub.cfg
+echo '    linux /live/vmlinuz boot=live live-config live-media-path=/live --' >> isowork/boot/grub/grub.cfg
+echo '    initrd /live/initrd.img' >> isowork/boot/grub/grub.cfg
+echo '}' >> isowork/boot/grub/grub.cfg
+echo "${yesil}</> ${kirmizi}İso oluşturuluyor.. ${yesil}</> ${turkuaz}"
+grub-mkrescue isowork -o debian-testing-live.iso

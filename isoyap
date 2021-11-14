@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Bu script GNU Lesser General Public License v3.0 ile lisanslanmıştır.
+
+gri=$'\e[1;30m';
+kirmizi=$'\e[1;31m';
+yesil=$'\e[1;32m';
+sari=$'\e[1;33m';
+mavi=$'\e[1;34m';
+mor=$'\e[1;35m';
+turkuaz=$'\e[1;36m';
+sifirla=$'\e[0m';
+kalin=$'\e[1m';
+
+
+if [[ "$(whoami)" != root ]]; then
+echo "${kirmizi}Önce sudo su komutu ile root olmalısınız!!!.."
+	exit 0
+fi
+
+clear
+echo "${kirmizi}</> ${kirmizi}Islem baslatiliyor gazabimiz mubarek olsun :D ${kirmizi}</> ${turkuaz}"
+echo "${yesil}</> ${kirmizi}Gerekli Paketler Yükleniyor ${yesil}</>"
+echo "${yesil}</> ${kirmizi}Yüklenecek Paketler : debootstrap xorriso squashfs-tools mtools grub-pc-bin grub-efi devscripts nano${yesil} </> ${turkuaz}"
+apt install debootstrap \
+    xorriso \
+    squashfs-tools \
+    mtools \
+    grub-pc-bin \
+    grub-efi \
+    devscripts \
+    git \
+    nano
+echo "${yesil}</> ${kirmizi} testing-chroot adlı dosya oluşturulup, debian'nın temeli bu dosyaya atılacak.. ${yesil}</> ${turkuaz}"
+mkdir testing-chroot
+chown root testing-chroot
+debootstrap --arch=amd64 --no-merged-usr testing testing-chroot https://deb.debian.org/debian
+echo "${yesil}</> ${kirmizi}Temel atıldı. içeriğe giriş yapılıp kernel driver vb yüklenecek.. ${yesil}</> ${turkuaz}"
+for i in dev dev/pts proc sys; do mount -o bind /$i testing-chroot/$i; done
+echo 'deb https://deb.debian.org/debian testing main contrib non-free' > testing-chroot/etc/apt/sources.list
+chroot testing-chroot apt update
+chroot testing-chroot apt install linux-headers-amd64 linux-image-amd64 -y
+chroot testing-chroot apt install grub-pc-bin grub-efi-ia32-bin grub-efi -y
+chroot testing-chroot apt install live-config live-boot -y 
+chroot testing-chroot apt install xorg xinit -y
+chroot testing-chroot apt install firmware-amd-graphics firmware-atheros \
+    firmware-b43-installer firmware-b43legacy-installer \
+    firmware-bnx2 firmware-bnx2x firmware-brcm80211  \
+    firmware-cavium firmware-intel-sound firmware-intelwimax \
+    firmware-ipw2x00 firmware-ivtv firmware-iwlwifi \
+    firmware-libertas firmware-linux firmware-linux-free \
+    firmware-linux-nonfree firmware-misc-nonfree firmware-myricom \
+    firmware-netxen firmware-qlogic firmware-realtek firmware-samsung \
+    firmware-siano firmware-ti-connectivity firmware-zd1211 -y
+echo "${yesil}</> ${kirmizi} <- - -> Lütfen Dikkatlice okuyunuz <- - ->   ${yesil}</>"
+echo "${yesil}</> ${kirmizi}Biz temelleri attık. artık gerisi sende, istediğiniz paketleri yükleyebilirsin. ha birde kendine göre bir giriş yöneticisi ve masaüstü kurmayı unutma. işin bitince exit komutu ile çık ve isoolustur komutunu çalıştır..${yesil}</>"
+chroot testing-chroot /bin/bash
