@@ -15,7 +15,7 @@ Yenilikler : Hatalar giderilmiştir. (29.10.2021)
 
 Masaüstü ve kurulum komutları
 
-Xfce :  ´apt-get install xfce4 xfce4-goodies´
+Xfce :  `apt-get install xfce4 xfce4-goodies`
 
 Lxde :  apt-get install lxde
 
