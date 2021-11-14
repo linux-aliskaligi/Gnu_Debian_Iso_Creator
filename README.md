@@ -6,7 +6,7 @@ Debian tabanlı dağıtım yapmayı kolaylaştıran bir araç
 
 İlk Önce Şunları Yapmanız Gerekmekte:
 
-> chmod +x isoyap
+> chmod +x isoyap ------
 > chmod +x isoolustur
 
 Bu komutaları girdikten sonra 'isoyap' dosyasını çalıştırın.
